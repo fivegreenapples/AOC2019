@@ -14,10 +14,20 @@ func lines(in string) []string {
 }
 
 func linesAsInts(in string) []int {
-	lineStrings := lines(in)
+	return stringsToInts(lines(in))
+}
+
+func csvToInts(in string) []int {
+	in = strings.TrimSpace(in)
+	in = strings.Trim(in, ",")
+	bits := strings.Split(in, ",")
+	return stringsToInts(bits)
+}
+
+func stringsToInts(inStrings []string) []int {
 	ints := []int{}
-	for _, l := range lineStrings {
-		thisInt, err := strconv.Atoi(l)
+	for _, in := range inStrings {
+		thisInt, err := strconv.Atoi(in)
 		if err != nil {
 			panic(err)
 		}

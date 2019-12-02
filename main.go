@@ -33,6 +33,9 @@ func main() {
 	case 1:
 		result1 = day1Part1(puzzleInput)
 		result2 = day1Part2(puzzleInput)
+	case 2:
+		result1 = day2Part1(puzzleInput)
+		result2 = day2Part2(puzzleInput)
 	default:
 		fmt.Printf("Error: day %d not yet implemented\n", *day)
 		os.Exit(2)
