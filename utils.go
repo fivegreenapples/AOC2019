@@ -23,6 +23,12 @@ func csvToInts(in string) []int {
 	bits := strings.Split(in, ",")
 	return stringsToInts(bits)
 }
+func csvToStrings(in string) []string {
+	in = strings.TrimSpace(in)
+	in = strings.Trim(in, ",")
+	bits := strings.Split(in, ",")
+	return bits
+}
 
 func stringsToInts(inStrings []string) []int {
 	ints := []int{}
