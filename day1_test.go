@@ -12,7 +12,7 @@ func TestDay1Part1(t *testing.T) {
 	}
 
 	for in, expectedOut := range testInputs {
-		out := day1Part1(in)
+		out := day1Part1(in, testing.Verbose())
 		if out != expectedOut {
 			t.Errorf("day1 failed with %s. Expected %s, got %s", in, expectedOut, out)
 		}
@@ -29,7 +29,7 @@ func TestDay1Part2(t *testing.T) {
 	}
 
 	for in, expectedOut := range testInputs {
-		out := day1Part2(in)
+		out := day1Part2(in, testing.Verbose())
 		if out != expectedOut {
 			t.Errorf("day1 failed with %s. Expected %s, got %s", in, expectedOut, out)
 		}

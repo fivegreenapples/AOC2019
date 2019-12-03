@@ -2,7 +2,12 @@ package main
 
 import "fmt"
 
-func day1Part1(in string) string {
+func init() {
+	registerPart1(1, day1Part1)
+	registerPart2(1, day1Part2)
+}
+
+func day1Part1(in string, verbose bool) string {
 	modules := linesAsInts(in)
 
 	fuel := 0
@@ -13,7 +18,7 @@ func day1Part1(in string) string {
 	return fmt.Sprintf("%d", fuel)
 }
 
-func day1Part2(in string) string {
+func day1Part2(in string, verbose bool) string {
 	modules := linesAsInts(in)
 
 	fuel := 0

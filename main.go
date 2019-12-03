@@ -5,11 +5,30 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 )
+
+var part1Registry map[int]func(string, bool) string
+var part2Registry map[int]func(string, bool) string
+
+func registerPart1(day int, impl func(string, bool) string) {
+	if part1Registry == nil {
+		part1Registry = make(map[int]func(string, bool) string)
+	}
+	part1Registry[day] = impl
+}
+func registerPart2(day int, impl func(string, bool) string) {
+	if part2Registry == nil {
+		part2Registry = make(map[int]func(string, bool) string)
+	}
+	part2Registry[day] = impl
+}
 
 func main() {
 
 	day := flag.Int("d", 0, "Day of Advent")
+	verbose := flag.Bool("v", false, "Verbosity")
+	part := flag.Int("p", 0, "Part")
 	input := flag.String("i", "", "Input file")
 	flag.Parse()
 
@@ -19,6 +38,16 @@ func main() {
 	}
 
 	var puzzleInput string
+
+	if *input == "" {
+		// with no input, we attempt to auto find the input file.
+		tryFile := "inputs/day" + strconv.Itoa(*day) + ".txt"
+		_, err := os.Stat(tryFile)
+		if err == nil {
+			*input = tryFile
+		}
+	}
+
 	if *input != "" {
 		puzzleInputBytes, err := ioutil.ReadFile(*input)
 		if err != nil {
@@ -28,23 +57,18 @@ func main() {
 		puzzleInput = string(puzzleInputBytes)
 	}
 
-	result1, result2 := "", ""
-	switch *day {
-	case 1:
-		result1 = day1Part1(puzzleInput)
-		result2 = day1Part2(puzzleInput)
-	case 2:
-		result1 = day2Part1(puzzleInput)
-		result2 = day2Part2(puzzleInput)
-	case 3:
-		result1 = day3Part1(puzzleInput)
-		// result2 = day3Part2(puzzleInput)
-	default:
-		fmt.Printf("Error: day %d not yet implemented\n", *day)
-		os.Exit(2)
+	impl1, found1 := part1Registry[*day]
+	impl2, found2 := part2Registry[*day]
 
+	if !found1 {
+		fmt.Printf("Day %d not yet implemented\n", *day)
+		os.Exit(3)
 	}
 
-	fmt.Println(result1)
-	fmt.Println(result2)
+	if *part == 0 || *part == 1 {
+		fmt.Println(impl1(puzzleInput, *verbose))
+	}
+	if found2 && (*part == 0 || *part == 2) {
+		fmt.Println(impl2(puzzleInput, *verbose))
+	}
 }

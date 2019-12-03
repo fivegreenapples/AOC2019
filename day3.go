@@ -6,7 +6,12 @@ import (
 	"strconv"
 )
 
-func day3Part1(in string) string {
+func init() {
+	registerPart1(3, day3Part1)
+	registerPart2(3, day3Part2)
+}
+
+func day3Part1(in string, verbose bool) string {
 
 	wires := lines(in)
 	wire1 := csvToStrings(wires[0])
@@ -15,7 +20,9 @@ func day3Part1(in string) string {
 	wire1Pixels := pixellate(wire1)
 	wire2Pixels := pixellate(wire2)
 
-	// renderWires(wire1Pixels, wire2Pixels)
+	if verbose {
+		renderWires(wire1Pixels, wire2Pixels)
+	}
 
 	collisions := findCollisions(wire1Pixels, wire2Pixels)
 	minDist := math.MaxInt64
@@ -26,7 +33,46 @@ func day3Part1(in string) string {
 		}
 	}
 
-	return fmt.Sprintf("%d", minDist)
+	return strconv.Itoa(minDist)
+}
+
+func day3Part2(in string, verbose bool) string {
+
+	wires := lines(in)
+	wire1 := csvToStrings(wires[0])
+	wire2 := csvToStrings(wires[1])
+
+	wire1Pixels := pixellateWithStepCount(wire1)
+	wire2Pixels := pixellateWithStepCount(wire2)
+
+	collisions := findCollisionsAndStepCounts(wire1Pixels, wire2Pixels)
+
+	minSteps := math.MaxInt64
+	for c, count := range collisions {
+
+		if c.manhattan() == 0 {
+			continue
+		}
+
+		if verbose {
+			fmt.Println(c, count)
+		}
+		if count < minSteps {
+			minSteps = count
+		}
+	}
+
+	return strconv.Itoa(minSteps)
+}
+
+func findCollisionsAndStepCounts(wire1, wire2 map[coord]int) map[coord]int {
+	collisions := map[coord]int{}
+	for c, steps1 := range wire1 {
+		if steps2, hit := wire2[c]; hit {
+			collisions[c] = steps1 + steps2
+		}
+	}
+	return collisions
 }
 
 func findCollisions(wire1, wire2 map[coord]bool) []coord {
@@ -102,10 +148,10 @@ func pixellate(wire []string) map[coord]bool {
 	pixels[current] = true
 	for _, next := range wire {
 
-		dir, len := convertToDeltaDetails(next)
+		unitDelta, len := convertToDeltaDetails(next)
 
 		for len > 0 {
-			current = current.add(dir)
+			current = current.add(unitDelta)
 			pixels[current] = true
 			len--
 		}
@@ -114,19 +160,31 @@ func pixellate(wire []string) map[coord]bool {
 	return pixels
 }
 
-func convertToCoords(in []string) []coord {
-	current := coord{0, 0}
-	coords := []coord{current}
+func pixellateWithStepCount(wire []string) map[coord]int {
 
-	for _, step := range in {
-		current = current.add(convertToVector(step))
-		coords = append(coords, current)
+	pixels := map[coord]int{}
+	current := coord{0, 0}
+	pixels[current] = 0
+	steps := 0
+	for _, next := range wire {
+
+		unitDelta, len := convertToDeltaDetails(next)
+
+		for len > 0 {
+			steps++
+			current = current.add(unitDelta)
+			if _, seen := pixels[current]; !seen {
+				// only overwrite steps count if we haven't visited here before
+				pixels[current] = steps
+			}
+			len--
+		}
 	}
 
-	return coords
+	return pixels
 }
 
-func convertToDeltaDetails(in string) (coord, int) {
+func convertToDeltaDetails(in string) (unitDelta coord, length int) {
 
 	dir := in[0:1]
 	len := in[1:]
@@ -144,29 +202,6 @@ func convertToDeltaDetails(in string) (coord, int) {
 		return coord{-1, 0}, lenInt
 	case "R":
 		return coord{1, 0}, lenInt
-	}
-
-	panic(fmt.Errorf("failed converting %s to vector", in))
-}
-
-func convertToVector(in string) coord {
-
-	dir := in[0:1]
-	len := in[1:]
-	lenInt, err := strconv.Atoi(len)
-	if err != nil {
-		panic(fmt.Errorf("failed converting %s to vector", in))
-	}
-
-	switch dir {
-	case "U":
-		return coord{0, lenInt}
-	case "D":
-		return coord{0, -lenInt}
-	case "L":
-		return coord{-lenInt, 0}
-	case "R":
-		return coord{lenInt, 0}
 	}
 
 	panic(fmt.Errorf("failed converting %s to vector", in))
