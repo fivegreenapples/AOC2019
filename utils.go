@@ -41,3 +41,27 @@ func stringsToInts(inStrings []string) []int {
 	}
 	return ints
 }
+
+func stringToDigits(in string) []int {
+	digits := make([]int, len(in))
+	for i, d := range strings.Split(in, "") {
+		digits[i] = mustAtoi(d)
+	}
+	return digits
+}
+
+func digitsToString(in []int) string {
+	stringDigits := make([]string, len(in))
+	for i, d := range in {
+		stringDigits[i] = strconv.Itoa(d)
+	}
+	return strings.Join(stringDigits, "")
+}
+
+func mustAtoi(in string) int {
+	ret, err := strconv.Atoi(in)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
