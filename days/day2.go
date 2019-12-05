@@ -11,6 +11,8 @@ import (
 
 func (r *Runner) Day2Part1(in string) string {
 	program := utils.CsvToInts(in)
+	program[1] = 12
+	program[2] = 2
 	result := d2Execute(program)
 	return fmt.Sprintf("%d", result)
 }
