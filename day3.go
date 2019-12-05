@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+
+	"github.com/fivegreenapples/AOC2019/utils"
 )
 
 func init() {
@@ -13,9 +15,9 @@ func init() {
 
 func day3Part1(in string, verbose bool) string {
 
-	wires := lines(in)
-	wire1 := csvToStrings(wires[0])
-	wire2 := csvToStrings(wires[1])
+	wires := utils.Lines(in)
+	wire1 := utils.CsvToStrings(wires[0])
+	wire2 := utils.CsvToStrings(wires[1])
 
 	wire1Pixels := pixellate(wire1)
 	wire2Pixels := pixellate(wire2)
@@ -38,9 +40,9 @@ func day3Part1(in string, verbose bool) string {
 
 func day3Part2(in string, verbose bool) string {
 
-	wires := lines(in)
-	wire1 := csvToStrings(wires[0])
-	wire2 := csvToStrings(wires[1])
+	wires := utils.Lines(in)
+	wire1 := utils.CsvToStrings(wires[0])
+	wire2 := utils.CsvToStrings(wires[1])
 
 	wire1Pixels := pixellateWithStepCount(wire1)
 	wire2Pixels := pixellateWithStepCount(wire2)

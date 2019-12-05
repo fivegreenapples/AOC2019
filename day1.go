@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+import "github.com/fivegreenapples/AOC2019/utils"
 
 func init() {
 	registerPart1(1, day1Part1)
@@ -8,7 +9,7 @@ func init() {
 }
 
 func day1Part1(in string, verbose bool) string {
-	modules := linesAsInts(in)
+	modules := utils.LinesAsInts(in)
 
 	fuel := 0
 	for _, m := range modules {
@@ -19,7 +20,7 @@ func day1Part1(in string, verbose bool) string {
 }
 
 func day1Part2(in string, verbose bool) string {
-	modules := linesAsInts(in)
+	modules := utils.LinesAsInts(in)
 
 	fuel := 0
 	for _, m := range modules {

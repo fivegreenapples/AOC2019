@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/fivegreenapples/AOC2019/utils"
 )
 
 func init() {
@@ -12,7 +14,7 @@ func init() {
 }
 
 func day4Part1(in string, verbose bool) string {
-	passRange := stringsToInts(strings.Split(in, "-"))
+	passRange := utils.StringsToInts(strings.Split(in, "-"))
 	min := password(passRange[0])
 	max := password(passRange[1])
 
@@ -32,7 +34,7 @@ func day4Part1(in string, verbose bool) string {
 }
 
 func day4Part2(in string, verbose bool) string {
-	passRange := stringsToInts(strings.Split(in, "-"))
+	passRange := utils.StringsToInts(strings.Split(in, "-"))
 	min := password(passRange[0])
 	max := password(passRange[1])
 

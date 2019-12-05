@@ -1,10 +1,11 @@
-package main
+package utils
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
-import "strconv"
-
-func lines(in string) []string {
+func Lines(in string) []string {
 	lines := strings.Split(in, "\n")
 	trimmed := []string{}
 	for _, l := range lines {
@@ -13,24 +14,24 @@ func lines(in string) []string {
 	return trimmed
 }
 
-func linesAsInts(in string) []int {
-	return stringsToInts(lines(in))
+func LinesAsInts(in string) []int {
+	return StringsToInts(Lines(in))
 }
 
-func csvToInts(in string) []int {
+func CsvToInts(in string) []int {
 	in = strings.TrimSpace(in)
 	in = strings.Trim(in, ",")
 	bits := strings.Split(in, ",")
-	return stringsToInts(bits)
+	return StringsToInts(bits)
 }
-func csvToStrings(in string) []string {
+func CsvToStrings(in string) []string {
 	in = strings.TrimSpace(in)
 	in = strings.Trim(in, ",")
 	bits := strings.Split(in, ",")
 	return bits
 }
 
-func stringsToInts(inStrings []string) []int {
+func StringsToInts(inStrings []string) []int {
 	ints := []int{}
 	for _, in := range inStrings {
 		thisInt, err := strconv.Atoi(in)
@@ -42,15 +43,15 @@ func stringsToInts(inStrings []string) []int {
 	return ints
 }
 
-func stringToDigits(in string) []int {
+func StringToDigits(in string) []int {
 	digits := make([]int, len(in))
 	for i, d := range strings.Split(in, "") {
-		digits[i] = mustAtoi(d)
+		digits[i] = MustAtoi(d)
 	}
 	return digits
 }
 
-func digitsToString(in []int) string {
+func DigitsToString(in []int) string {
 	stringDigits := make([]string, len(in))
 	for i, d := range in {
 		stringDigits[i] = strconv.Itoa(d)
@@ -58,7 +59,7 @@ func digitsToString(in []int) string {
 	return strings.Join(stringDigits, "")
 }
 
-func mustAtoi(in string) int {
+func MustAtoi(in string) int {
 	ret, err := strconv.Atoi(in)
 	if err != nil {
 		panic(err)

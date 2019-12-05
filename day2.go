@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/fivegreenapples/AOC2019/intcode"
+	"github.com/fivegreenapples/AOC2019/utils"
 )
 
 func init() {
@@ -12,37 +15,21 @@ func init() {
 }
 
 func day2Part1(in string, verbose bool) string {
-	program := csvToInts(in)
+	program := utils.CsvToInts(in)
 	result := d2Execute(program)
 	return fmt.Sprintf("%d", result)
 }
 
 func d2Execute(program []int) int {
 
-	pc := 0
-
-	for {
-		// fmt.Println(printProgram(program, pc))
-
-		opcode := program[pc]
-		switch opcode {
-		case 1:
-			program[program[pc+3]] = program[program[pc+1]] + program[program[pc+2]]
-		case 2:
-			program[program[pc+3]] = program[program[pc+1]] * program[program[pc+2]]
-		case 99:
-			return program[0]
-		default:
-			panic(fmt.Errorf("unhandled opcode: %d at position %d", opcode, pc))
-		}
-
-		pc += 4
-	}
+	vm := intcode.New(program)
+	vm.Run(nil, nil)
+	return vm.Read(0)
 
 }
 
 func day2Part2(in string, verbose bool) string {
-	program := csvToInts(in)
+	program := utils.CsvToInts(in)
 
 	for noun := 0; noun <= 99; noun++ {
 		for verb := 0; verb <= 99; verb++ {
