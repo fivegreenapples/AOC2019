@@ -1,4 +1,4 @@
-package main
+package days
 
 import (
 	"fmt"
@@ -9,12 +9,7 @@ import (
 	"github.com/fivegreenapples/AOC2019/utils"
 )
 
-func init() {
-	registerPart1(2, day2Part1)
-	registerPart2(2, day2Part2)
-}
-
-func day2Part1(in string, verbose bool) string {
+func (r *Runner) Day2Part1(in string) string {
 	program := utils.CsvToInts(in)
 	result := d2Execute(program)
 	return fmt.Sprintf("%d", result)
@@ -28,7 +23,7 @@ func d2Execute(program []int) int {
 
 }
 
-func day2Part2(in string, verbose bool) string {
+func (r *Runner) Day2Part2(in string) string {
 	program := utils.CsvToInts(in)
 
 	for noun := 0; noun <= 99; noun++ {

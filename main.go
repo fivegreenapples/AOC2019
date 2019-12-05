@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/fivegreenapples/AOC2019/days"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -57,18 +58,24 @@ func main() {
 		puzzleInput = string(puzzleInputBytes)
 	}
 
-	impl1, found1 := part1Registry[*day]
-	impl2, found2 := part2Registry[*day]
-
-	if !found1 {
-		fmt.Printf("Day %d not yet implemented\n", *day)
-		os.Exit(3)
-	}
+	runner := days.NewRunner(*verbose)
 
 	if *part == 0 || *part == 1 {
-		fmt.Println(impl1(puzzleInput, *verbose))
+		pt1Out, pt1err := runner.Run(*day, 1, puzzleInput)
+		if pt1err != nil {
+			fmt.Printf("%s\n", pt1err.Error())
+			os.Exit(3)
+		}
+		fmt.Println(pt1Out)
 	}
-	if found2 && (*part == 0 || *part == 2) {
-		fmt.Println(impl2(puzzleInput, *verbose))
+	if *part == 0 || *part == 2 {
+		pt2Out, pt2err := runner.Run(*day, 2, puzzleInput)
+		if pt2err == nil {
+			fmt.Println(pt2Out)
+		} else if *part == 2 {
+			// only display error if we asked for part 2
+			fmt.Printf("%s\n", pt2err.Error())
+			os.Exit(3)
+		}
 	}
 }

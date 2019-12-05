@@ -1,6 +1,8 @@
-package main
+package password
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestDay4Part1(t *testing.T) {
 
@@ -14,8 +16,8 @@ func TestDay4Part1(t *testing.T) {
 	}
 
 	for in, expectedValid := range testInputs {
-		p := password(in)
-		p.makeValidMultipleSameDigits()
+		p := Password(in)
+		p.MakeValidMultipleSameDigits()
 
 		if expectedValid != int(p) {
 			t.Errorf("password validation failed. Expected next valid on or after %v to be %v. Got %v", in, expectedValid, p)
@@ -32,8 +34,8 @@ func TestDay4Part2(t *testing.T) {
 	}
 
 	for in, expectedValid := range testInputs {
-		p := password(in)
-		p.makeValidDoubleDigit()
+		p := Password(in)
+		p.MakeValidDoubleDigit()
 
 		if expectedValid != int(p) {
 			t.Errorf("password validation failed. Expected next valid on or after %v to be %v. Got %v", in, expectedValid, p)

@@ -1,4 +1,4 @@
-package main
+package days
 
 import (
 	"fmt"
@@ -8,12 +8,7 @@ import (
 	"github.com/fivegreenapples/AOC2019/utils"
 )
 
-func init() {
-	registerPart1(3, day3Part1)
-	registerPart2(3, day3Part2)
-}
-
-func day3Part1(in string, verbose bool) string {
+func (r *Runner) Day3Part1(in string) string {
 
 	wires := utils.Lines(in)
 	wire1 := utils.CsvToStrings(wires[0])
@@ -22,14 +17,14 @@ func day3Part1(in string, verbose bool) string {
 	wire1Pixels := pixellate(wire1)
 	wire2Pixels := pixellate(wire2)
 
-	if verbose {
+	if r.verbose {
 		renderWires(wire1Pixels, wire2Pixels)
 	}
 
 	collisions := findCollisions(wire1Pixels, wire2Pixels)
 	minDist := math.MaxInt64
 	for _, c := range collisions {
-		mh := c.manhattan()
+		mh := c.Manhattan()
 		if mh > 0 && mh < minDist {
 			minDist = mh
 		}
@@ -38,7 +33,7 @@ func day3Part1(in string, verbose bool) string {
 	return strconv.Itoa(minDist)
 }
 
-func day3Part2(in string, verbose bool) string {
+func (r *Runner) Day3Part2(in string) string {
 
 	wires := utils.Lines(in)
 	wire1 := utils.CsvToStrings(wires[0])
@@ -52,11 +47,11 @@ func day3Part2(in string, verbose bool) string {
 	minSteps := math.MaxInt64
 	for c, count := range collisions {
 
-		if c.manhattan() == 0 {
+		if c.Manhattan() == 0 {
 			continue
 		}
 
-		if verbose {
+		if r.verbose {
 			fmt.Println(c, count)
 		}
 		if count < minSteps {
@@ -67,8 +62,8 @@ func day3Part2(in string, verbose bool) string {
 	return strconv.Itoa(minSteps)
 }
 
-func findCollisionsAndStepCounts(wire1, wire2 map[coord]int) map[coord]int {
-	collisions := map[coord]int{}
+func findCollisionsAndStepCounts(wire1, wire2 map[utils.Coord]int) map[utils.Coord]int {
+	collisions := map[utils.Coord]int{}
 	for c, steps1 := range wire1 {
 		if steps2, hit := wire2[c]; hit {
 			collisions[c] = steps1 + steps2
@@ -77,8 +72,8 @@ func findCollisionsAndStepCounts(wire1, wire2 map[coord]int) map[coord]int {
 	return collisions
 }
 
-func findCollisions(wire1, wire2 map[coord]bool) []coord {
-	collisions := []coord{}
+func findCollisions(wire1, wire2 map[utils.Coord]bool) []utils.Coord {
+	collisions := []utils.Coord{}
 	for c := range wire1 {
 		if _, hit := wire2[c]; hit {
 			collisions = append(collisions, c)
@@ -87,43 +82,43 @@ func findCollisions(wire1, wire2 map[coord]bool) []coord {
 	return collisions
 }
 
-func renderWires(wire1, wire2 map[coord]bool) {
+func renderWires(wire1, wire2 map[utils.Coord]bool) {
 
 	// find extents
-	max, min := coord{math.MinInt64, math.MinInt64}, coord{math.MaxInt64, math.MaxInt64}
+	max, min := utils.Coord{math.MinInt64, math.MinInt64}, utils.Coord{math.MaxInt64, math.MaxInt64}
 	for c := range wire1 {
-		if c.x > max.x {
-			max.x = c.x
+		if c.X > max.X {
+			max.X = c.X
 		}
-		if c.y > max.y {
-			max.y = c.y
+		if c.Y > max.Y {
+			max.Y = c.Y
 		}
-		if c.x < min.x {
-			min.x = c.x
+		if c.X < min.X {
+			min.X = c.X
 		}
-		if c.y < min.y {
-			min.y = c.y
+		if c.Y < min.Y {
+			min.Y = c.Y
 		}
 	}
 	for c := range wire2 {
-		if c.x > max.x {
-			max.x = c.x
+		if c.X > max.X {
+			max.X = c.X
 		}
-		if c.y > max.y {
-			max.y = c.y
+		if c.Y > max.Y {
+			max.Y = c.Y
 		}
-		if c.x < min.x {
-			min.x = c.x
+		if c.X < min.X {
+			min.X = c.X
 		}
-		if c.y < min.y {
-			min.y = c.y
+		if c.Y < min.Y {
+			min.Y = c.Y
 		}
 	}
 
-	for y := max.y; y >= min.y; y-- {
-		for x := min.x; x <= max.x; x++ {
-			p1 := wire1[coord{x, y}]
-			p2 := wire2[coord{x, y}]
+	for y := max.Y; y >= min.Y; y-- {
+		for x := min.X; x <= max.X; x++ {
+			p1 := wire1[utils.Coord{x, y}]
+			p2 := wire2[utils.Coord{x, y}]
 			if x == 0 && y == 0 {
 				fmt.Print("O")
 			} else if p1 && p2 {
@@ -143,17 +138,17 @@ func renderWires(wire1, wire2 map[coord]bool) {
 
 }
 
-func pixellate(wire []string) map[coord]bool {
+func pixellate(wire []string) map[utils.Coord]bool {
 
-	pixels := map[coord]bool{}
-	current := coord{0, 0}
+	pixels := map[utils.Coord]bool{}
+	current := utils.Coord{0, 0}
 	pixels[current] = true
 	for _, next := range wire {
 
 		unitDelta, len := convertToDeltaDetails(next)
 
 		for len > 0 {
-			current = current.add(unitDelta)
+			current = current.Add(unitDelta)
 			pixels[current] = true
 			len--
 		}
@@ -162,10 +157,10 @@ func pixellate(wire []string) map[coord]bool {
 	return pixels
 }
 
-func pixellateWithStepCount(wire []string) map[coord]int {
+func pixellateWithStepCount(wire []string) map[utils.Coord]int {
 
-	pixels := map[coord]int{}
-	current := coord{0, 0}
+	pixels := map[utils.Coord]int{}
+	current := utils.Coord{0, 0}
 	pixels[current] = 0
 	steps := 0
 	for _, next := range wire {
@@ -174,7 +169,7 @@ func pixellateWithStepCount(wire []string) map[coord]int {
 
 		for len > 0 {
 			steps++
-			current = current.add(unitDelta)
+			current = current.Add(unitDelta)
 			if _, seen := pixels[current]; !seen {
 				// only overwrite steps count if we haven't visited here before
 				pixels[current] = steps
@@ -186,7 +181,7 @@ func pixellateWithStepCount(wire []string) map[coord]int {
 	return pixels
 }
 
-func convertToDeltaDetails(in string) (unitDelta coord, length int) {
+func convertToDeltaDetails(in string) (unitDelta utils.Coord, length int) {
 
 	dir := in[0:1]
 	len := in[1:]
@@ -197,13 +192,13 @@ func convertToDeltaDetails(in string) (unitDelta coord, length int) {
 
 	switch dir {
 	case "U":
-		return coord{0, 1}, lenInt
+		return utils.Coord{0, 1}, lenInt
 	case "D":
-		return coord{0, -1}, lenInt
+		return utils.Coord{0, -1}, lenInt
 	case "L":
-		return coord{-1, 0}, lenInt
+		return utils.Coord{-1, 0}, lenInt
 	case "R":
-		return coord{1, 0}, lenInt
+		return utils.Coord{1, 0}, lenInt
 	}
 
 	panic(fmt.Errorf("failed converting %s to vector", in))

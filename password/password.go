@@ -1,40 +1,40 @@
-package main
+package password
 
 import (
 	"math"
 )
 
-type password int
+type Password int
 
-func passwordFromDigits(in []int) password {
+func passwordFromDigits(in []int) Password {
 	p := 0
 	l := len(in)
 	for i, d := range in {
 		p += d * int(math.Pow10(l-i-1))
 	}
-	return password(p)
+	return Password(p)
 }
 
-func (p *password) makeValidMultipleSameDigits() {
+func (p *Password) MakeValidMultipleSameDigits() {
 
-	p.add(0)
+	p.Add(0)
 	for !p.hasMultipleSameDigits() {
-		p.add(1)
+		p.Add(1)
 	}
 
 }
 
-func (p *password) makeValidDoubleDigit() {
+func (p *Password) MakeValidDoubleDigit() {
 
-	p.add(0)
+	p.Add(0)
 	for !p.hasDoubleDigit() {
-		p.add(1)
+		p.Add(1)
 	}
 }
 
-func (p *password) add(n int) {
+func (p *Password) Add(n int) {
 
-	*p = password(int(*p) + n)
+	*p = Password(int(*p) + n)
 
 	digits := p.toDigits()
 	cp := 0
@@ -52,7 +52,7 @@ func (p *password) add(n int) {
 	*p = passwordFromDigits(digits)
 }
 
-func (p *password) hasMultipleSameDigits() bool {
+func (p *Password) hasMultipleSameDigits() bool {
 	seenDigits := map[int]bool{}
 	for _, d := range p.toDigits() {
 		if _, seen := seenDigits[d]; seen {
@@ -63,7 +63,7 @@ func (p *password) hasMultipleSameDigits() bool {
 	return false
 }
 
-func (p *password) hasDoubleDigit() bool {
+func (p *Password) hasDoubleDigit() bool {
 	seenDigits := map[int]int{}
 	for _, d := range p.toDigits() {
 		cnt, seen := seenDigits[d]
@@ -80,7 +80,7 @@ func (p *password) hasDoubleDigit() bool {
 	return false
 }
 
-func (p *password) toDigits() []int {
+func (p *Password) toDigits() []int {
 
 	pow := int(math.Log10(float64(*p)))
 	digits := make([]int, pow+1)

@@ -1,4 +1,4 @@
-package main
+package days
 
 import "testing"
 
@@ -11,9 +11,10 @@ func TestDay2Part1(t *testing.T) {
 		"2,4,4,5,99,0":                  "2",
 		"1,1,1,4,99,5,6,0,99":           "30",
 	}
+	dayRunner := NewRunner(testing.Verbose())
 
 	for in, expectedOut := range testInputs {
-		out := day2Part1(in, testing.Verbose())
+		out, _ := dayRunner.Run(2, 1, in)
 		if out != expectedOut {
 			t.Errorf("day2 failed with %s. Expected %s, got %s", in, expectedOut, out)
 		}
