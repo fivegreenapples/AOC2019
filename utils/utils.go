@@ -66,3 +66,10 @@ func MustAtoi(in string) int {
 	}
 	return ret
 }
+
+func StringSliceReverse(in []string) []string {
+	for left, right := 0, len(in)-1; left < right; left, right = left+1, right-1 {
+		in[left], in[right] = in[right], in[left]
+	}
+	return in
+}
