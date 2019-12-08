@@ -1,13 +1,16 @@
 package intcode
 
-import "io"
-
 import "fmt"
+
+import "sync"
 
 type VM struct {
 	src   []int
-	ram   []int
 	debug bool
+}
+
+type Core struct {
+	ram []int
 }
 
 func New(program []int) *VM {
@@ -16,18 +19,56 @@ func New(program []int) *VM {
 	}
 }
 
-func (vm *VM) Read(addr int) int {
-	return vm.ram[addr]
+func (c *Core) Read(addr int) int {
+	return c.ram[addr]
 }
 
 func (vm *VM) SetDebug(val bool) {
 	vm.debug = val
 }
 
-func (vm *VM) Run(input io.Reader, output io.Writer) {
+func (vm *VM) RunSlice(input []int) (*Core, []int) {
 
-	vm.ram = make([]int, len(vm.src))
-	copy(vm.ram, vm.src)
+	inputBuffer := make(chan int, len(input))
+	outputBuffer := make(chan int)
+
+	// fill input buffer
+	for _, v := range input {
+		inputBuffer <- v
+	}
+
+	// Create wait group used to signal end of goroutines
+	wait := sync.WaitGroup{}
+	wait.Add(1)
+	wait.Add(1)
+	var core *Core
+	go func() {
+		core = vm.Run(inputBuffer, outputBuffer)
+		close(outputBuffer)
+		wait.Done()
+	}()
+
+	// create output slice and start goroutine to fill it from the outputBuffer
+	output := []int{}
+	go func() {
+		for val := range outputBuffer {
+			output = append(output, val)
+		}
+		wait.Done()
+	}()
+
+	wait.Wait()
+
+	return core, output
+
+}
+
+func (vm *VM) Run(input chan int, output chan int) *Core {
+
+	core := Core{
+		ram: make([]int, len(vm.src)),
+	}
+	copy(core.ram, vm.src)
 
 	pc := 0
 	var opcode, operation int
@@ -36,46 +77,59 @@ func (vm *VM) Run(input io.Reader, output io.Writer) {
 
 	for {
 
-		opcode = vm.ram[pc]
+		opcode = core.ram[pc]
 		operation = opcode % 100
 		modeA = (opcode / 100) % 10
 		modeB = (opcode / 1000) % 10
 
 		if vm.debug {
-			fmt.Println(opcode, operation)
+			// fmt.Println(opcode, operation)
 		}
 
 		switch operation {
 		case 4:
-			pA = vm.ram[pc+1]
+			pA = core.ram[pc+1]
 			if modeA == 0 {
-				pA = vm.ram[pA]
+				pA = core.ram[pA]
 			}
 		case 1, 2, 5, 6, 7, 8:
-			pA = vm.ram[pc+1]
-			pB = vm.ram[pc+2]
+			pA = core.ram[pc+1]
+			pB = core.ram[pc+2]
 			if modeA == 0 {
-				pA = vm.ram[pA]
+				pA = core.ram[pA]
 			}
 			if modeB == 0 {
-				pB = vm.ram[pB]
+				pB = core.ram[pB]
 			}
 		}
 
 		switch operation {
 		case 1:
-			vm.ram[vm.ram[pc+3]] = pA + pB
+			core.ram[core.ram[pc+3]] = pA + pB
 			pc += 4
 		case 2:
-			vm.ram[vm.ram[pc+3]] = pA * pB
+			core.ram[core.ram[pc+3]] = pA * pB
 			pc += 4
+		// case 3:
+		// 	var opIn int
+		// 	fmt.Fscanf(input, "%d\n", &opIn)
+		// 	core.ram[core.ram[pc+1]] = opIn
+		// 	pc += 2
+		// case 4:
+		// 	fmt.Fprintf(output, "%d\n", pA)
+		// 	pc += 2
 		case 3:
-			var opIn int
-			fmt.Fscanf(input, "%d\n", &opIn)
-			vm.ram[vm.ram[pc+1]] = opIn
+			in := <-input
+			core.ram[core.ram[pc+1]] = in
+			if vm.debug {
+				fmt.Println("Read input: ", in)
+			}
 			pc += 2
 		case 4:
-			fmt.Fprintf(output, "%d\n", pA)
+			if vm.debug {
+				fmt.Println("Sending output: ", pA)
+			}
+			output <- pA
 			pc += 2
 		case 5:
 			if pA != 0 {
@@ -91,20 +145,20 @@ func (vm *VM) Run(input io.Reader, output io.Writer) {
 			}
 		case 7:
 			if pA < pB {
-				vm.ram[vm.ram[pc+3]] = 1
+				core.ram[core.ram[pc+3]] = 1
 			} else {
-				vm.ram[vm.ram[pc+3]] = 0
+				core.ram[core.ram[pc+3]] = 0
 			}
 			pc += 4
 		case 8:
 			if pA == pB {
-				vm.ram[vm.ram[pc+3]] = 1
+				core.ram[core.ram[pc+3]] = 1
 			} else {
-				vm.ram[vm.ram[pc+3]] = 0
+				core.ram[core.ram[pc+3]] = 0
 			}
 			pc += 4
 		case 99:
-			return
+			return &core
 		default:
 			panic(fmt.Errorf("unhandled operation %d (in opcode %d) at position %d", operation, opcode, pc))
 		}

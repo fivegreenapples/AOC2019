@@ -34,6 +34,7 @@ func CsvToStrings(in string) []string {
 func StringsToInts(inStrings []string) []int {
 	ints := []int{}
 	for _, in := range inStrings {
+		in := strings.TrimSpace(in)
 		thisInt, err := strconv.Atoi(in)
 		if err != nil {
 			panic(err)

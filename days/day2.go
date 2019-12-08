@@ -20,8 +20,8 @@ func (r *Runner) Day2Part1(in string) string {
 func d2Execute(program []int) int {
 
 	vm := intcode.New(program)
-	vm.Run(nil, nil)
-	return vm.Read(0)
+	core := vm.Run(nil, nil)
+	return core.Read(0)
 
 }
 

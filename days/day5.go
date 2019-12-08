@@ -1,7 +1,7 @@
 package days
 
 import (
-	"strings"
+	"strconv"
 
 	"github.com/fivegreenapples/AOC2019/intcode"
 	"github.com/fivegreenapples/AOC2019/utils"
@@ -13,12 +13,9 @@ func (r *Runner) Day5Part1(in string) string {
 	vm := intcode.New(testProgram)
 	vm.SetDebug(r.verbose)
 
-	input := strings.NewReader("1")
-	var output strings.Builder
+	_, out := vm.RunSlice([]int{1})
 
-	vm.Run(input, &output)
-
-	return output.String()
+	return strconv.Itoa(out[0])
 }
 
 func (r *Runner) Day5Part2(in string) string {
@@ -27,10 +24,7 @@ func (r *Runner) Day5Part2(in string) string {
 	vm := intcode.New(testProgram)
 	vm.SetDebug(r.verbose)
 
-	input := strings.NewReader("5")
-	var output strings.Builder
+	_, out := vm.RunSlice([]int{5})
 
-	vm.Run(input, &output)
-
-	return output.String()
+	return strconv.Itoa(out[0])
 }

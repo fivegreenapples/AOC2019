@@ -2,8 +2,6 @@ package intcode
 
 import (
 	"math/rand"
-	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -25,9 +23,9 @@ func TestAddMultiplyPositionMode(t *testing.T) {
 		program := utils.CsvToInts(in)
 
 		vm := New(program)
-		vm.Run(nil, nil)
+		core := vm.Run(nil, nil)
 
-		out := vm.Read(0)
+		out := core.Read(0)
 
 		if out != expectedOut {
 			t.Errorf("failed with %s. Expected %d, got %d", in, expectedOut, out)
@@ -44,17 +42,14 @@ func TestInputOutput(t *testing.T) {
 	vm.SetDebug(testing.Verbose())
 
 	rand.Seed(time.Now().UnixNano())
-	iterations := 20
-	for iterations > 0 {
-		iterations--
 
-		inputString := strconv.Itoa(rand.Int())
-		var output strings.Builder
+	for iterations := 20; iterations > 0; iterations-- {
 
-		vm.Run(strings.NewReader(inputString), &output)
+		inputInt := rand.Int()
+		_, out := vm.RunSlice([]int{inputInt})
 
-		if inputString != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected same as input but got %s", inputString, output.String())
+		if inputInt != out[0] {
+			t.Errorf("failed with %d. Expected same as input but got %d", inputInt, out[0])
 		}
 
 	}
@@ -69,8 +64,8 @@ func TestParameterModes(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	vm.Run(nil, nil)
-	out := vm.Read(4)
+	core := vm.Run(nil, nil)
+	out := core.Read(4)
 
 	if out != 99 {
 		t.Errorf("expected 99 at address 4, got %d", out)
@@ -84,20 +79,19 @@ func TestEqualPositionMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-1": "0",
-		"1":  "0",
-		"8":  "1",
-		"18": "0",
+	testInputs := map[int]int{
+		-1: 0,
+		1:  0,
+		8:  1,
+		18: 0,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -110,20 +104,19 @@ func TestEqualImmediateMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-1": "0",
-		"1":  "0",
-		"8":  "1",
-		"18": "0",
+	testInputs := map[int]int{
+		-1: 0,
+		1:  0,
+		8:  1,
+		18: 0,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -136,20 +129,19 @@ func TestLessThanPositionMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-1": "1",
-		"1":  "1",
-		"8":  "0",
-		"18": "0",
+	testInputs := map[int]int{
+		-1: 1,
+		1:  1,
+		8:  0,
+		18: 0,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -162,20 +154,19 @@ func TestLessThanImmediateMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-1": "1",
-		"1":  "1",
-		"8":  "0",
-		"18": "0",
+	testInputs := map[int]int{
+		-1: 1,
+		1:  1,
+		8:  0,
+		18: 0,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -188,21 +179,20 @@ func TestJumpPositionMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-123": "1",
-		"-13":  "1",
-		"0":    "0",
-		"13":   "1",
-		"123":  "1",
+	testInputs := map[int]int{
+		-123: 1,
+		-13:  1,
+		0:    0,
+		13:   1,
+		123:  1,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -215,21 +205,20 @@ func TestJumpImmediateMode(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-123": "1",
-		"-13":  "1",
-		"0":    "0",
-		"13":   "1",
-		"123":  "1",
+	testInputs := map[int]int{
+		-123: 1,
+		-13:  1,
+		0:    0,
+		13:   1,
+		123:  1,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
@@ -244,25 +233,24 @@ func TestComparisons(t *testing.T) {
 	vm := New(program)
 	vm.SetDebug(testing.Verbose())
 
-	testInputs := map[string]string{
-		"-123":    "999",
-		"-13":     "999",
-		"0":       "999",
-		"3":       "999",
-		"8":       "1000",
-		"13":      "1001",
-		"133":     "1001",
-		"1323":    "1001",
-		"1324234": "1001",
+	testInputs := map[int]int{
+		-123:    999,
+		-13:     999,
+		0:       999,
+		3:       999,
+		8:       1000,
+		13:      1001,
+		133:     1001,
+		1323:    1001,
+		1324234: 1001,
 	}
 
 	for in, expectedOut := range testInputs {
 
-		var output strings.Builder
-		vm.Run(strings.NewReader(in), &output)
+		_, out := vm.RunSlice([]int{in})
 
-		if expectedOut != strings.TrimSpace(output.String()) {
-			t.Errorf("failed with %s. Expected %s but got %s", in, expectedOut, output.String())
+		if expectedOut != out[0] {
+			t.Errorf("failed with %d. Expected %d but got %d", in, expectedOut, out[0])
 		}
 
 	}
