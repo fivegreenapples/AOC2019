@@ -9,22 +9,6 @@ import (
 	"strconv"
 )
 
-var part1Registry map[int]func(string, bool) string
-var part2Registry map[int]func(string, bool) string
-
-func registerPart1(day int, impl func(string, bool) string) {
-	if part1Registry == nil {
-		part1Registry = make(map[int]func(string, bool) string)
-	}
-	part1Registry[day] = impl
-}
-func registerPart2(day int, impl func(string, bool) string) {
-	if part2Registry == nil {
-		part2Registry = make(map[int]func(string, bool) string)
-	}
-	part2Registry[day] = impl
-}
-
 func main() {
 
 	day := flag.Int("d", 0, "Day of Advent")
