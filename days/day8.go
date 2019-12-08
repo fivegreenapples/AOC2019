@@ -10,7 +10,7 @@ import (
 func (r *Runner) Day8Part1(in string) string {
 
 	// image is 25 x 6
-	minZeroes := math.MaxInt32
+	minZeroes := math.MaxInt64
 	var minZeroLayer map[rune]int
 	currentLayerOfInterest := map[rune]int{}
 	for i, char := range in {

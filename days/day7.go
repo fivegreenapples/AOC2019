@@ -21,7 +21,7 @@ func (r *Runner) Day7Part1(in string) string {
 	controlVM.SetDebug(r.verbose)
 
 	phasePermutations := permutations([]int{0, 1, 2, 3, 4})
-	maxOutput := math.MinInt32
+	maxOutput := math.MinInt64
 	for _, phases := range phasePermutations {
 
 		currentInput := 0
