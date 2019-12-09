@@ -15,7 +15,7 @@ func (r *Runner) Day5Part1(in string) string {
 
 	_, out := vm.RunSlice([]int{1})
 
-	return strconv.Itoa(out[0])
+	return strconv.Itoa(out[len(out)-1])
 }
 
 func (r *Runner) Day5Part2(in string) string {

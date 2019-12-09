@@ -10,7 +10,7 @@ type VM struct {
 }
 
 type Core struct {
-	ram []int
+	ram map[int]int
 }
 
 func New(program []int) *VM {
@@ -66,14 +66,17 @@ func (vm *VM) RunSlice(input []int) (*Core, []int) {
 func (vm *VM) Run(input chan int, output chan int) *Core {
 
 	core := Core{
-		ram: make([]int, len(vm.src)),
+		ram: make(map[int]int, len(vm.src)),
 	}
-	copy(core.ram, vm.src)
+	for i, data := range vm.src {
+		core.ram[i] = data
+	}
 
 	pc := 0
+	relativeBase := 0
 	var opcode, operation int
-	var modeA, modeB int
-	var pA, pB int
+	var modeA, modeB, modeC int
+	var pA, pB, pC int
 
 	for {
 
@@ -81,46 +84,61 @@ func (vm *VM) Run(input chan int, output chan int) *Core {
 		operation = opcode % 100
 		modeA = (opcode / 100) % 10
 		modeB = (opcode / 1000) % 10
+		modeC = (opcode / 10000) % 10
 
 		if vm.debug {
 			// fmt.Println(opcode, operation)
 		}
 
 		switch operation {
-		case 4:
-			pA = core.ram[pc+1]
-			if modeA == 0 {
-				pA = core.ram[pA]
+		case 1, 2, 7, 8:
+			// pC is always an address of where to write
+			if modeC == 0 {
+				pC = core.ram[pc+3]
+			} else if modeC == 1 {
+				panic("immediate mode not supported for opcode pC")
+			} else if modeC == 2 {
+				pC = relativeBase + core.ram[pc+3]
 			}
-		case 1, 2, 5, 6, 7, 8:
-			pA = core.ram[pc+1]
-			pB = core.ram[pc+2]
-			if modeA == 0 {
-				pA = core.ram[pA]
-			}
+			fallthrough
+		case 5, 6:
 			if modeB == 0 {
-				pB = core.ram[pB]
+				pB = core.ram[core.ram[pc+2]]
+			} else if modeB == 1 {
+				pB = core.ram[pc+2]
+			} else if modeB == 2 {
+				pB = core.ram[relativeBase+core.ram[pc+2]]
+			}
+			fallthrough
+		case 4, 9:
+			if modeA == 0 {
+				pA = core.ram[core.ram[pc+1]]
+			} else if modeA == 1 {
+				pA = core.ram[pc+1]
+			} else if modeA == 2 {
+				pA = core.ram[relativeBase+core.ram[pc+1]]
+			}
+		case 3:
+			// for opcode 3 (input), pA becomes the address of where to write
+			if modeA == 0 {
+				pA = core.ram[pc+1]
+			} else if modeA == 1 {
+				panic("immediate mode not supported for opcode 3")
+			} else if modeA == 2 {
+				pA = relativeBase + core.ram[pc+1]
 			}
 		}
 
 		switch operation {
 		case 1:
-			core.ram[core.ram[pc+3]] = pA + pB
+			core.ram[pC] = pA + pB
 			pc += 4
 		case 2:
-			core.ram[core.ram[pc+3]] = pA * pB
+			core.ram[pC] = pA * pB
 			pc += 4
-		// case 3:
-		// 	var opIn int
-		// 	fmt.Fscanf(input, "%d\n", &opIn)
-		// 	core.ram[core.ram[pc+1]] = opIn
-		// 	pc += 2
-		// case 4:
-		// 	fmt.Fprintf(output, "%d\n", pA)
-		// 	pc += 2
 		case 3:
 			in := <-input
-			core.ram[core.ram[pc+1]] = in
+			core.ram[pA] = in
 			if vm.debug {
 				fmt.Println("Read input: ", in)
 			}
@@ -145,18 +163,21 @@ func (vm *VM) Run(input chan int, output chan int) *Core {
 			}
 		case 7:
 			if pA < pB {
-				core.ram[core.ram[pc+3]] = 1
+				core.ram[pC] = 1
 			} else {
-				core.ram[core.ram[pc+3]] = 0
+				core.ram[pC] = 0
 			}
 			pc += 4
 		case 8:
 			if pA == pB {
-				core.ram[core.ram[pc+3]] = 1
+				core.ram[pC] = 1
 			} else {
-				core.ram[core.ram[pc+3]] = 0
+				core.ram[pC] = 0
 			}
 			pc += 4
+		case 9:
+			relativeBase += pA
+			pc += 2
 		case 99:
 			return &core
 		default:

@@ -256,3 +256,57 @@ func TestComparisons(t *testing.T) {
 	}
 
 }
+
+func TestRelativeBase(t *testing.T) {
+
+	program := []int{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99}
+	vm := New(program)
+	vm.SetDebug(testing.Verbose())
+
+	expectedOut := program
+
+	_, out := vm.RunSlice(nil)
+
+	if len(out) != len(expectedOut) {
+		t.Errorf("Expected output to be same as input. Expected %v, got %v", expectedOut, out)
+	}
+
+	for i, v := range expectedOut {
+		if v != out[i] {
+			t.Errorf("Expected output to be same as input. Expected %v, got %v", expectedOut, out)
+		}
+	}
+
+}
+
+func TestLargeNumbers(t *testing.T) {
+
+	program := []int{1102, 34915192, 34915192, 7, 4, 7, 99, 0}
+	vm := New(program)
+	vm.SetDebug(testing.Verbose())
+
+	expectedOut := 1219070632396864
+
+	_, out := vm.RunSlice(nil)
+
+	if expectedOut != out[0] {
+		t.Errorf("Expected %d but got %d", expectedOut, out[0])
+	}
+
+}
+
+func TestLargeNumbers2(t *testing.T) {
+
+	program := []int{104, 1125899906842624, 99}
+	vm := New(program)
+	vm.SetDebug(testing.Verbose())
+
+	expectedOut := 1125899906842624
+
+	_, out := vm.RunSlice(nil)
+
+	if expectedOut != out[0] {
+		t.Errorf("Expected %d but got %d", expectedOut, out[0])
+	}
+
+}
