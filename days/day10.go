@@ -63,6 +63,7 @@ func (r *Runner) Day10Part2(in string) string {
 		// Make sure due north has a zero angle
 		angleMetric = angleMetric % 36000
 
+		// Store pt in bucket
 		if currentPts, exists := buckets[angleMetric]; !exists {
 			angles = append(angles, angleMetric)
 			buckets[angleMetric] = []utils.Coord{pt}
