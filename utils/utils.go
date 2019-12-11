@@ -30,7 +30,13 @@ func CsvToStrings(in string) []string {
 	bits := strings.Split(in, ",")
 	return bits
 }
-
+func IntsToCSV(in []int) string {
+	bits := []string{}
+	for _, v := range in {
+		bits = append(bits, strconv.Itoa(v))
+	}
+	return strings.Join(bits, ",")
+}
 func StringsToInts(inStrings []string) []int {
 	ints := []int{}
 	for _, in := range inStrings {
