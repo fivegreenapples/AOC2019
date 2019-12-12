@@ -43,3 +43,42 @@ func (c Coord) Simplify() Coord {
 	return Coord{c.X / lcf, c.Y / lcf}
 
 }
+
+func ExtentsOfIntMap(in map[Coord]int) (min, max Coord) {
+	min = Coord{math.MaxInt64, math.MaxInt64}
+	max = Coord{math.MinInt64, math.MinInt64}
+	for pt := range in {
+		if pt.X < min.X {
+			min.X = pt.X
+		}
+		if pt.Y < min.Y {
+			min.Y = pt.Y
+		}
+		if pt.X > max.X {
+			max.X = pt.X
+		}
+		if pt.Y > max.Y {
+			max.Y = pt.Y
+		}
+	}
+	return min, max
+}
+func ExtentsOfBoolMap(in map[Coord]bool) (min, max Coord) {
+	min = Coord{math.MaxInt64, math.MaxInt64}
+	max = Coord{math.MinInt64, math.MinInt64}
+	for pt := range in {
+		if pt.X < min.X {
+			min.X = pt.X
+		}
+		if pt.Y < min.Y {
+			min.Y = pt.Y
+		}
+		if pt.X > max.X {
+			max.X = pt.X
+		}
+		if pt.Y > max.Y {
+			max.Y = pt.Y
+		}
+	}
+	return min, max
+}
