@@ -4,14 +4,61 @@ import "math"
 
 import "fmt"
 
-var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199}
+var primes = []int{}
+
+func makePrimes() {
+	if len(primes) > 0 {
+		return
+	}
+	var x, y, n int
+	const N = 20000000
+	nsqrt := math.Sqrt(N)
+
+	is_prime := [N]bool{}
+
+	for x = 1; float64(x) <= nsqrt; x++ {
+		for y = 1; float64(y) <= nsqrt; y++ {
+			n = 4*(x*x) + y*y
+			if n <= N && (n%12 == 1 || n%12 == 5) {
+				is_prime[n] = !is_prime[n]
+			}
+			n = 3*(x*x) + y*y
+			if n <= N && n%12 == 7 {
+				is_prime[n] = !is_prime[n]
+			}
+			n = 3*(x*x) - y*y
+			if x > y && n <= N && n%12 == 11 {
+				is_prime[n] = !is_prime[n]
+			}
+		}
+	}
+
+	for n = 5; float64(n) <= nsqrt; n++ {
+		if is_prime[n] {
+			for y = n * n; y < N; y += n * n {
+				is_prime[y] = false
+			}
+		}
+	}
+
+	is_prime[2] = true
+	is_prime[3] = true
+
+	primes = make([]int, 0, 1270606)
+	for x = 0; x < len(is_prime)-1; x++ {
+		if is_prime[x] {
+			primes = append(primes, x)
+		}
+	}
+
+}
 
 func AbsInt(val int) int {
 	return int(math.Abs(float64(val)))
 }
 
 func PrimeFactors(val int) []int {
-
+	makePrimes()
 	if val <= 0 {
 		panic(fmt.Errorf("can't factorise %d as less than or equal to zero", val))
 	}
