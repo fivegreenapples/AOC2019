@@ -14,3 +14,16 @@ func StringsFromRegex(in string, r string) [][]string {
 
 	return ret
 }
+
+func AllStringsFromRegex(in string, r string) [][][]string {
+
+	regex := regexp.MustCompile(r)
+
+	lines := Lines(in)
+	ret := make([][][]string, len(lines))
+	for i, line := range lines {
+		ret[i] = regex.FindAllStringSubmatch(line, -1)
+	}
+
+	return ret
+}
