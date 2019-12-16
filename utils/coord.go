@@ -7,6 +7,8 @@ type Coord struct {
 	Y int
 }
 
+var Origin = Coord{X: 0, Y: 0}
+
 func (c Coord) Manhattan() int {
 	return int(math.Abs(float64(c.X)) + math.Abs(float64(c.Y)))
 }
