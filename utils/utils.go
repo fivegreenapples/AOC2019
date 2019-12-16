@@ -30,12 +30,39 @@ func CsvToStrings(in string) []string {
 	bits := strings.Split(in, ",")
 	return bits
 }
+func MultilineCsvToInts(in string, sep string) [][]int {
+	ret := [][]int{}
+	for _, l := range Lines(in) {
+		l = strings.TrimSpace(l)
+		l = strings.Trim(l, sep)
+		bits := strings.Split(l, sep)
+		ret = append(ret, StringsToInts(bits))
+	}
+	return ret
+}
+func MultilineCsvToStrings(in string, sep string) [][]string {
+	ret := [][]string{}
+	for _, l := range Lines(in) {
+		l = strings.TrimSpace(l)
+		l = strings.Trim(l, sep)
+		bits := strings.Split(l, sep)
+		ret = append(ret, bits)
+	}
+	return ret
+}
 func IntsToCSV(in []int) string {
 	bits := []string{}
 	for _, v := range in {
 		bits = append(bits, strconv.Itoa(v))
 	}
 	return strings.Join(bits, ",")
+}
+func IntsToCSVSep(in []int, sep string) string {
+	bits := []string{}
+	for _, v := range in {
+		bits = append(bits, strconv.Itoa(v))
+	}
+	return strings.Join(bits, sep)
 }
 func StringsToInts(inStrings []string) []int {
 	ints := []int{}
