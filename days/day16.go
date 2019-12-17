@@ -113,7 +113,6 @@ func (l *fftList) runPhaseForOffset(offset int) {
 		patIdx := 0
 		listIdx := 0
 		thisPatternRepeats := patternRepeats - 1
-		// fmt.Println("pattern repeats is", thisPatternRepeats)
 		for listIdx < len(curValues) {
 
 			patValue := pattern[patIdx]
