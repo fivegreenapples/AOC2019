@@ -4,6 +4,8 @@ import "fmt"
 
 import "sync"
 
+import "github.com/fivegreenapples/AOC2019/utils"
+
 type VM struct {
 	src   []int
 	debug bool
@@ -17,6 +19,10 @@ func New(program []int) *VM {
 	return &VM{
 		src: program,
 	}
+}
+
+func NewFromString(program string) *VM {
+	return New(utils.CsvToInts(program))
 }
 
 func (c *Core) Read(addr int) int {
