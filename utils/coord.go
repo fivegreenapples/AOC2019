@@ -25,7 +25,13 @@ func (c Coord) Sub(cc Coord) Coord {
 		c.Y - cc.Y,
 	}
 }
-
+func (c Coord) ThreeD(z int) Coord3d {
+	return Coord3d{
+		c.X,
+		c.Y,
+		z,
+	}
+}
 func (c Coord) Simplify() Coord {
 
 	absX := AbsInt(c.X)
@@ -66,6 +72,26 @@ func ExtentsOfIntMap(in map[Coord]int) (min, max Coord) {
 	return min, max
 }
 func ExtentsOfBoolMap(in map[Coord]bool) (min, max Coord) {
+	min = Coord{math.MaxInt64, math.MaxInt64}
+	max = Coord{math.MinInt64, math.MinInt64}
+	for pt := range in {
+		if pt.X < min.X {
+			min.X = pt.X
+		}
+		if pt.Y < min.Y {
+			min.Y = pt.Y
+		}
+		if pt.X > max.X {
+			max.X = pt.X
+		}
+		if pt.Y > max.Y {
+			max.Y = pt.Y
+		}
+	}
+	return min, max
+}
+
+func ExtentsOfStringMap(in map[Coord]string) (min, max Coord) {
 	min = Coord{math.MaxInt64, math.MaxInt64}
 	max = Coord{math.MinInt64, math.MinInt64}
 	for pt := range in {

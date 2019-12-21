@@ -27,6 +27,13 @@ func (c Coord3d) Sub(cc Coord3d) Coord3d {
 	}
 }
 
+func (c Coord3d) TwoD() Coord {
+	return Coord{
+		c.X,
+		c.Y,
+	}
+}
+
 func ExtentsOf3DIntMap(in map[Coord3d]int) (min, max Coord3d) {
 	min = Coord3d{math.MaxInt64, math.MaxInt64, math.MaxInt64}
 	max = Coord3d{math.MinInt64, math.MinInt64, math.MinInt64}
