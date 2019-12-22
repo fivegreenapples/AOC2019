@@ -155,7 +155,7 @@ func (r *Runner) Day21Part2(in string) string {
 	// => (!A || !B || !C) && D && (H || E&&I || !A)
 	// => (!A || !B || !C) && D && !(!(H || E&&I) && A)
 	//
-	// Resulting porgram is:
+	// Resulting program is:
 	// NOT A T
 	// OR T J
 	// NOT B T
