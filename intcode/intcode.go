@@ -6,9 +6,13 @@ import "sync"
 
 import "github.com/fivegreenapples/AOC2019/utils"
 
+import "time"
+
 type VM struct {
-	src   []int
-	debug bool
+	src              []int
+	debug            bool
+	nonBlockingInput bool
+	defaultInput     int
 }
 
 type Core struct {
@@ -27,6 +31,11 @@ func NewFromString(program string) *VM {
 
 func (c *Core) Read(addr int) int {
 	return c.ram[addr]
+}
+
+func (vm *VM) SetNonBlockingInput(withDefault int) {
+	vm.nonBlockingInput = true
+	vm.defaultInput = withDefault
 }
 
 func (vm *VM) SetDebug(val bool) {
@@ -143,7 +152,17 @@ func (vm *VM) Run(input chan int, output chan int) *Core {
 			core.ram[pC] = pA * pB
 			pc += 4
 		case 3:
-			in := <-input
+			var in int
+			if vm.nonBlockingInput {
+				timer := time.NewTimer(10 * time.Millisecond)
+				select {
+				case in = <-input:
+				case <-timer.C: // timer used here to avoid cores spinning furiously
+					in = vm.defaultInput
+				}
+			} else {
+				in = <-input
+			}
 			core.ram[pA] = in
 			if vm.debug {
 				fmt.Println("Read input: ", in)
