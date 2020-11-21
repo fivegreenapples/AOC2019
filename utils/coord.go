@@ -8,6 +8,10 @@ type Coord struct {
 }
 
 var Origin = Coord{X: 0, Y: 0}
+var Up = Coord{X: 0, Y: -1}
+var Right = Coord{X: 1, Y: 0}
+var Down = Coord{X: 0, Y: 1}
+var Left = Coord{X: -1, Y: 0}
 
 func (c Coord) Manhattan() int {
 	return int(math.Abs(float64(c.X)) + math.Abs(float64(c.Y)))
