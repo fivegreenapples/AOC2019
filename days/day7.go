@@ -114,7 +114,7 @@ func permutations(options []int) [][]int {
 	}
 	if len(options) == 1 {
 		return [][]int{
-			[]int{
+			{
 				options[0],
 			},
 		}

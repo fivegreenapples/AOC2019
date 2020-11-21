@@ -22,7 +22,7 @@ func (r *Runner) Day11Part2(in string) string {
 	min, max := utils.ExtentsOfIntMap(painted)
 	for y := max.Y; y >= min.Y; y-- {
 		for x := min.X; x <= max.X; x++ {
-			if 1 == painted[utils.Coord{x, y}] {
+			if 1 == painted[utils.Coord{X: x, Y: y}] {
 				fmt.Fprint(picture, "#")
 			} else {
 				fmt.Fprint(picture, " ")
@@ -41,8 +41,8 @@ func goRobot(in string, startColour int) map[utils.Coord]int {
 
 	input := make(chan int, 1)
 	output := make(chan int)
-	curPos := utils.Coord{0, 0}
-	curBearing := utils.Coord{0, 1}
+	curPos := utils.Coord{X: 0, Y: 0}
+	curBearing := utils.Coord{X: 0, Y: 1}
 	painted := map[utils.Coord]int{}
 	var wg sync.WaitGroup
 

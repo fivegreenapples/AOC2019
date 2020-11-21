@@ -19,7 +19,7 @@ func (r *Runner) Day10Part1(in string) string {
 		for y := 0; y <= yExtent; y++ {
 			for x := 0; x <= xExtent; x++ {
 
-				pt := utils.Coord{x, y}
+				pt := utils.Coord{X: x, Y: y}
 
 				if pt == maxVisibleCoord {
 					fmt.Print("O")
@@ -113,7 +113,7 @@ func (r *Runner) Day10Part2(in string) string {
 		for y := 0; y <= yExtent; y++ {
 			for x := 0; x <= xExtent; x++ {
 
-				pt := utils.Coord{x, y}
+				pt := utils.Coord{X: x, Y: y}
 				order := laseredOrder[pt]
 
 				if pt == monitoringCoord {
@@ -137,11 +137,11 @@ func (r *Runner) Day10Part2(in string) string {
 func getAsteroidLocations(in string) (map[utils.Coord]bool, int, int) {
 	mapRows := utils.Lines(in)
 	asteroidLocs := map[utils.Coord]bool{}
-	maxExtent := utils.Coord{0, 0}
+	maxExtent := utils.Coord{X: 0, Y: 0}
 	for y, row := range mapRows {
 		for x, pt := range row {
-			asteroidLocs[utils.Coord{x, y}] = pt == '#'
-			maxExtent = utils.Coord{x, y}
+			asteroidLocs[utils.Coord{X: x, Y: y}] = pt == '#'
+			maxExtent = utils.Coord{X: x, Y: y}
 		}
 	}
 	return asteroidLocs, maxExtent.X, maxExtent.Y
@@ -149,12 +149,12 @@ func getAsteroidLocations(in string) (map[utils.Coord]bool, int, int) {
 
 func findBestLocation(asteroidLocs map[utils.Coord]bool, xExtent, yExtent int) (int, utils.Coord, map[utils.Coord]bool) {
 	maxVisibleAsteroids := 0
-	maxVisibleCoord := utils.Coord{0, 0}
+	maxVisibleCoord := utils.Coord{X: 0, Y: 0}
 	maxVisibleAsteroidsLocs := map[utils.Coord]bool{}
 	for y := 0; y <= yExtent; y++ {
 		for x := 0; x <= xExtent; x++ {
 
-			pt := utils.Coord{x, y}
+			pt := utils.Coord{X: x, Y: y}
 
 			if !asteroidLocs[pt] {
 				continue

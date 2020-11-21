@@ -33,14 +33,14 @@ func d20RenderMaze(maze map[utils.Coord]string, entrance, exit utils.Coord) {
 
 	for y := min.Y; y <= max.Y; y++ {
 		for x := min.X; x <= max.X; x++ {
-			thisCoord := utils.Coord{x, y}
+			thisCoord := utils.Coord{X: x, Y: y}
 			switch thisCoord {
 			case entrance:
 				fmt.Print("I")
 			case exit:
 				fmt.Print("O")
 			default:
-				fmt.Print(maze[utils.Coord{x, y}])
+				fmt.Print(maze[utils.Coord{X: x, Y: y}])
 			}
 		}
 		fmt.Println()
@@ -60,10 +60,10 @@ func d20ProcessMaze(in string) (maze map[utils.Coord]string, entrance, exit util
 			continue
 		}
 
-		maze[utils.Coord{x, y}] = string(char)
+		maze[utils.Coord{X: x, Y: y}] = string(char)
 
 		if char >= 'A' && char <= 'Z' {
-			letters[utils.Coord{x, y}] = true
+			letters[utils.Coord{X: x, Y: y}] = true
 		}
 
 		x++
@@ -79,39 +79,39 @@ func d20ProcessMaze(in string) (maze map[utils.Coord]string, entrance, exit util
 		var portalCoord, otherCoord, openTileCoord utils.Coord
 		var portal string
 
-		n := maze[coord.Add(utils.Coord{0, -1})]
-		s := maze[coord.Add(utils.Coord{0, 1})]
-		ss := maze[coord.Add(utils.Coord{0, 2})]
+		n := maze[coord.Add(utils.Coord{X: 0, Y: -1})]
+		s := maze[coord.Add(utils.Coord{X: 0, Y: 1})]
+		ss := maze[coord.Add(utils.Coord{X: 0, Y: 2})]
 		if s >= "A" && s <= "Z" {
 			portal = thisLetter + s
 
 			if n == "." {
 				portalCoord = coord
-				otherCoord = coord.Add(utils.Coord{0, 1})
-				openTileCoord = coord.Add(utils.Coord{0, -1})
+				otherCoord = coord.Add(utils.Coord{X: 0, Y: 1})
+				openTileCoord = coord.Add(utils.Coord{X: 0, Y: -1})
 			} else if ss == "." {
-				portalCoord = coord.Add(utils.Coord{0, 1})
+				portalCoord = coord.Add(utils.Coord{X: 0, Y: 1})
 				otherCoord = coord
-				openTileCoord = coord.Add(utils.Coord{0, 2})
+				openTileCoord = coord.Add(utils.Coord{X: 0, Y: 2})
 			} else {
 				panic("unexplained maze feature")
 			}
 		}
 
-		w := maze[coord.Add(utils.Coord{-1, 0})]
-		e := maze[coord.Add(utils.Coord{1, 0})]
-		ee := maze[coord.Add(utils.Coord{2, 0})]
+		w := maze[coord.Add(utils.Coord{X: -1, Y: 0})]
+		e := maze[coord.Add(utils.Coord{X: 1, Y: 0})]
+		ee := maze[coord.Add(utils.Coord{X: 2, Y: 0})]
 		if e >= "A" && e <= "Z" {
 			portal = thisLetter + e
 
 			if w == "." {
 				portalCoord = coord
-				otherCoord = coord.Add(utils.Coord{1, 0})
-				openTileCoord = coord.Add(utils.Coord{-1, 0})
+				otherCoord = coord.Add(utils.Coord{X: 1, Y: 0})
+				openTileCoord = coord.Add(utils.Coord{X: -1, Y: 0})
 			} else if ee == "." {
-				portalCoord = coord.Add(utils.Coord{1, 0})
+				portalCoord = coord.Add(utils.Coord{X: 1, Y: 0})
 				otherCoord = coord
-				openTileCoord = coord.Add(utils.Coord{2, 0})
+				openTileCoord = coord.Add(utils.Coord{X: 2, Y: 0})
 			} else {
 				panic("unexplained maze feature")
 			}
@@ -181,10 +181,10 @@ func d20FindShortestRoute(maze map[utils.Coord]string, entrance, exit utils.Coor
 	}
 
 	movementOptions := []utils.Coord{
-		utils.Coord{0, -1},
-		utils.Coord{1, 0},
-		utils.Coord{0, 1},
-		utils.Coord{-1, 0},
+		{X: 0, Y: -1},
+		{X: 1, Y: 0},
+		{X: 0, Y: 1},
+		{X: -1, Y: 0},
 	}
 
 	length := 0
@@ -233,7 +233,7 @@ func d20FindShortestRoute(maze map[utils.Coord]string, entrance, exit utils.Coor
 func d20FindShortestRouteRecursive(maze map[utils.Coord]string, entrance, exit utils.Coord) int {
 	portals := d20FindPortals(maze)
 	min, max := utils.ExtentsOfStringMap(maze)
-	mazeMin, mazeMax := min.Add(utils.Coord{2, 2}), max.Sub(utils.Coord{2, 2}) // accounts for the border
+	mazeMin, mazeMax := min.Add(utils.Coord{X: 2, Y: 2}), max.Sub(utils.Coord{X: 2, Y: 2}) // accounts for the border
 
 	useEntrance := utils.Coord3d{
 		X: entrance.X,
@@ -255,10 +255,10 @@ func d20FindShortestRouteRecursive(maze map[utils.Coord]string, entrance, exit u
 	}
 
 	var (
-		north = utils.Coord3d{0, -1, 0}
-		east  = utils.Coord3d{1, 0, 0}
-		south = utils.Coord3d{0, 1, 0}
-		west  = utils.Coord3d{-1, 0, 0}
+		north = utils.Coord3d{X: 0, Y: -1, Z: 0}
+		east  = utils.Coord3d{X: 1, Y: 0, Z: 0}
+		south = utils.Coord3d{X: 0, Y: 1, Z: 0}
+		west  = utils.Coord3d{X: -1, Y: 0, Z: 0}
 	)
 	movementOptions := []utils.Coord3d{north, east, south, west}
 

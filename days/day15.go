@@ -63,7 +63,7 @@ func (r *Runner) d15ExploreWithDroid(in string) (mappedArea map[utils.Coord]*pos
 	go droid.Run(input, output)
 
 	area := map[utils.Coord]*pos{
-		utils.Origin: &pos{
+		utils.Origin: {
 			typ: floor,
 		},
 	}
@@ -232,7 +232,7 @@ func renderArea(area map[utils.Coord]*pos, droidPos utils.Coord) {
 	min, max := extentsOfMap(area)
 	for y := min.Y; y <= max.Y; y++ {
 		for x := min.X; x <= max.X; x++ {
-			thisPos := utils.Coord{x, y}
+			thisPos := utils.Coord{X: x, Y: y}
 			if thisPos == utils.Origin {
 				fmt.Print("X")
 			} else if thisPos == droidPos {
@@ -249,8 +249,8 @@ func renderArea(area map[utils.Coord]*pos, droidPos utils.Coord) {
 }
 
 func extentsOfMap(in map[utils.Coord]*pos) (min, max utils.Coord) {
-	min = utils.Coord{math.MaxInt64, math.MaxInt64}
-	max = utils.Coord{math.MinInt64, math.MinInt64}
+	min = utils.Coord{X: math.MaxInt64, Y: math.MaxInt64}
+	max = utils.Coord{X: math.MinInt64, Y: math.MinInt64}
 	for pt := range in {
 		if pt.X < min.X {
 			min.X = pt.X
@@ -284,13 +284,13 @@ func reverseDirection(d direction) direction {
 func deltaForDirection(d direction) utils.Coord {
 	switch d {
 	case north:
-		return utils.Coord{0, -1}
+		return utils.Coord{X: 0, Y: -1}
 	case east:
-		return utils.Coord{1, 0}
+		return utils.Coord{X: 1, Y: 0}
 	case south:
-		return utils.Coord{0, 1}
+		return utils.Coord{X: 0, Y: 1}
 	case west:
-		return utils.Coord{-1, 0}
+		return utils.Coord{X: -1, Y: 0}
 	}
 	return utils.Origin
 }

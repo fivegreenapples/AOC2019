@@ -85,7 +85,7 @@ func findCollisions(wire1, wire2 map[utils.Coord]bool) []utils.Coord {
 func renderWires(wire1, wire2 map[utils.Coord]bool) {
 
 	// find extents
-	max, min := utils.Coord{math.MinInt64, math.MinInt64}, utils.Coord{math.MaxInt64, math.MaxInt64}
+	max, min := utils.Coord{X: math.MinInt64, Y: math.MinInt64}, utils.Coord{X: math.MaxInt64, Y: math.MaxInt64}
 	for c := range wire1 {
 		if c.X > max.X {
 			max.X = c.X
@@ -117,8 +117,8 @@ func renderWires(wire1, wire2 map[utils.Coord]bool) {
 
 	for y := max.Y; y >= min.Y; y-- {
 		for x := min.X; x <= max.X; x++ {
-			p1 := wire1[utils.Coord{x, y}]
-			p2 := wire2[utils.Coord{x, y}]
+			p1 := wire1[utils.Coord{X: x, Y: y}]
+			p2 := wire2[utils.Coord{X: x, Y: y}]
 			if x == 0 && y == 0 {
 				fmt.Print("O")
 			} else if p1 && p2 {
@@ -141,7 +141,7 @@ func renderWires(wire1, wire2 map[utils.Coord]bool) {
 func pixellate(wire []string) map[utils.Coord]bool {
 
 	pixels := map[utils.Coord]bool{}
-	current := utils.Coord{0, 0}
+	current := utils.Coord{X: 0, Y: 0}
 	pixels[current] = true
 	for _, next := range wire {
 
@@ -160,7 +160,7 @@ func pixellate(wire []string) map[utils.Coord]bool {
 func pixellateWithStepCount(wire []string) map[utils.Coord]int {
 
 	pixels := map[utils.Coord]int{}
-	current := utils.Coord{0, 0}
+	current := utils.Coord{X: 0, Y: 0}
 	pixels[current] = 0
 	steps := 0
 	for _, next := range wire {
@@ -192,13 +192,13 @@ func convertToDeltaDetails(in string) (unitDelta utils.Coord, length int) {
 
 	switch dir {
 	case "U":
-		return utils.Coord{0, 1}, lenInt
+		return utils.Coord{X: 0, Y: 1}, lenInt
 	case "D":
-		return utils.Coord{0, -1}, lenInt
+		return utils.Coord{X: 0, Y: -1}, lenInt
 	case "L":
-		return utils.Coord{-1, 0}, lenInt
+		return utils.Coord{X: -1, Y: 0}, lenInt
 	case "R":
-		return utils.Coord{1, 0}, lenInt
+		return utils.Coord{X: 1, Y: 0}, lenInt
 	}
 
 	panic(fmt.Errorf("failed converting %s to vector", in))

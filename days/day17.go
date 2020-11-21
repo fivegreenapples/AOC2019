@@ -29,16 +29,16 @@ func (r *Runner) Day17Part1(in string) string {
 		if !valid {
 			break
 		}
-		viewMap[utils.Coord{x, y}] = cur
+		viewMap[utils.Coord{X: x, Y: y}] = cur
 
 		if x >= 3 && y >= 2 {
-			if viewMap[utils.Coord{x - 2, y}] == '#' &&
-				viewMap[utils.Coord{x - 1, y}] == '#' &&
-				viewMap[utils.Coord{x, y}] == '#' &&
-				viewMap[utils.Coord{x - 1, y - 1}] == '#' {
+			if viewMap[utils.Coord{X: x - 2, Y: y}] == '#' &&
+				viewMap[utils.Coord{X: x - 1, Y: y}] == '#' &&
+				viewMap[utils.Coord{X: x, Y: y}] == '#' &&
+				viewMap[utils.Coord{X: x - 1, Y: y - 1}] == '#' {
 
 				// Must be intersection at {x - 1, y}
-				viewMap[utils.Coord{x - 1, y}] = 'O'
+				viewMap[utils.Coord{X: x - 1, Y: y}] = 'O'
 				if r.verbose {
 					fmt.Print("\bO")
 				}
@@ -48,7 +48,7 @@ func (r *Runner) Day17Part1(in string) string {
 		}
 
 		if r.verbose {
-			fmt.Print(string(viewMap[utils.Coord{x, y}]))
+			fmt.Print(string(viewMap[utils.Coord{X: x, Y: y}]))
 		}
 
 		if cur == '\n' {

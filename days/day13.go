@@ -60,7 +60,7 @@ func (r *Runner) Day13Part2(in string) string {
 					} else if c == 4 {
 						ballX = a
 					}
-					grid[utils.Coord{a, b}] = c
+					grid[utils.Coord{X: a, Y: b}] = c
 				}
 
 				if ballX == paddleX {
@@ -97,7 +97,7 @@ func renderGrid(grid map[utils.Coord]int, score int) {
 	for y := min.Y; y <= max.Y; y++ {
 		for x := min.X; x <= max.X; x++ {
 
-			tile := grid[utils.Coord{x, y}]
+			tile := grid[utils.Coord{X: x, Y: y}]
 			switch tile {
 			case 0:
 				fmt.Print(" ")
