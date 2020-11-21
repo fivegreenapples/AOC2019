@@ -26,7 +26,7 @@ func (r *Runner) Day21Part1(in string) string {
 	go func() {
 		for char := range output {
 			if char <= 127 {
-				fmt.Print(string(char))
+				fmt.Print(string(rune(char)))
 			} else {
 				fmt.Print(char)
 			}
@@ -113,7 +113,7 @@ func (r *Runner) Day21Part2(in string) string {
 	go func() {
 		for char := range output {
 			if char <= 127 {
-				fmt.Print(string(char))
+				fmt.Print(string(rune(char)))
 			} else {
 				fmt.Print(char)
 			}

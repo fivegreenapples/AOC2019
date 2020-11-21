@@ -19,7 +19,7 @@ func (r *Runner) Day25Part1(in string) string {
 	wg.Add(1)
 	go func() {
 		for char := range output {
-			fmt.Print(string(char))
+			fmt.Print(string(rune(char)))
 		}
 		wg.Done()
 	}()

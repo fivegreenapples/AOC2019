@@ -48,7 +48,7 @@ func (r *Runner) Day17Part1(in string) string {
 		}
 
 		if r.verbose {
-			fmt.Print(string(viewMap[utils.Coord{X: x, Y: y}]))
+			fmt.Print(string(rune(viewMap[utils.Coord{X: x, Y: y}])))
 		}
 
 		if cur == '\n' {
@@ -120,7 +120,7 @@ func (r *Runner) Day17Part2(in string) string {
 		last = current
 
 		if r.verbose && current <= 127 {
-			fmt.Print(string(current))
+			fmt.Print(string(rune(current)))
 		}
 		if current > 127 {
 			dust = current
