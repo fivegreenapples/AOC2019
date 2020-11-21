@@ -37,18 +37,18 @@ func TestPrimeFactos(t *testing.T) {
 func TestSimplifyCoord(t *testing.T) {
 
 	testInputs := map[Coord]Coord{
-		Coord{6, 9}:   Coord{2, 3},
-		Coord{5, 0}:   Coord{1, 0},
-		Coord{0, 5}:   Coord{0, 1},
-		Coord{-5, 0}:  Coord{-1, 0},
-		Coord{0, -5}:  Coord{0, -1},
-		Coord{1, 1}:   Coord{1, 1},
-		Coord{1, 8}:   Coord{1, 8},
-		Coord{2, 3}:   Coord{2, 3},
-		Coord{-2, 3}:  Coord{-2, 3},
-		Coord{2, 10}:  Coord{1, 5},
-		Coord{8, 28}:  Coord{2, 7},
-		Coord{8, -28}: Coord{2, -7},
+		{X: 6, Y: 9}:   {X: 2, Y: 3},
+		{X: 5, Y: 0}:   {X: 1, Y: 0},
+		{X: 0, Y: 5}:   {X: 0, Y: 1},
+		{X: -5, Y: 0}:  {X: -1, Y: 0},
+		{X: 0, Y: -5}:  {X: 0, Y: -1},
+		{X: 1, Y: 1}:   {X: 1, Y: 1},
+		{X: 1, Y: 8}:   {X: 1, Y: 8},
+		{X: 2, Y: 3}:   {X: 2, Y: 3},
+		{X: -2, Y: 3}:  {X: -2, Y: 3},
+		{X: 2, Y: 10}:  {X: 1, Y: 5},
+		{X: 8, Y: 28}:  {X: 2, Y: 7},
+		{X: 8, Y: -28}: {X: 2, Y: -7},
 	}
 
 	for in, expectedOut := range testInputs {
