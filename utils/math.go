@@ -1,8 +1,9 @@
 package utils
 
-import "math"
-
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 var primes = []int{}
 
@@ -55,6 +56,12 @@ func makePrimes() {
 
 func AbsInt(val int) int {
 	return int(math.Abs(float64(val)))
+}
+func Sign(val int) int {
+	if val < 0 {
+		return -1
+	}
+	return 1
 }
 
 func PrimeFactors(val int) []int {
