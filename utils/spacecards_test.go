@@ -171,7 +171,7 @@ func TestDay22Example4(t *testing.T) {
 	}
 }
 
-func _TestReapplyCuts(t *testing.T) {
+func TestReapplyCuts(t *testing.T) {
 	doCut := func(p SpaceCards) {
 		p.Cut(2)
 		p.Cut(-3)
@@ -196,6 +196,24 @@ func _TestReapplyCuts(t *testing.T) {
 	}
 }
 
+func TestReapplyDealWithIncrement(t *testing.T) {
+	pack := NewPack(10)
+	pack.DealWithIncrement(3)
+	pack.Reapply(3)
+	reapplied := pack.LimitedCSV(10)
+
+	pack = NewPack(10)
+	pack.DealWithIncrement(3)
+	pack.DealWithIncrement(3)
+	pack.DealWithIncrement(3)
+	pack.DealWithIncrement(3)
+	manualReapply := pack.LimitedCSV(10)
+	fmt.Println(manualReapply)
+	if reapplied != manualReapply {
+		t.Errorf("expected reapply of deal with increment to match manual reapplication. Expected %s, got %s", manualReapply, reapplied)
+	}
+}
+
 func TestReapplyDealIntoNewStack(t *testing.T) {
 	pack := NewPack(10)
 	pack.DealIntoNewStack()
@@ -210,6 +228,6 @@ func TestReapplyDealIntoNewStack(t *testing.T) {
 	manualReapply := pack.LimitedCSV(10)
 	fmt.Println(manualReapply)
 	if reapplied != manualReapply {
-		t.Errorf("expected reapply of cut sequence to match manual reapplication. Expected %s, got %s", manualReapply, reapplied)
+		t.Errorf("expected reapply of deal into new stack to match manual reapplication. Expected %s, got %s", manualReapply, reapplied)
 	}
 }
